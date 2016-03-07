@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.renderer.ChartColourScheme;
+
 /**
  * Interface with all important methods for the model chart showing the graphs of the gc file.
  *
@@ -79,5 +81,7 @@ public interface ModelChart {
     void setShowDateStamp(boolean showDateStamp);
 
     boolean isShowDateStamp();
+
+    ChartColourScheme getColourScheme();
 
 }

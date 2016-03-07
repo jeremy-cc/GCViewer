@@ -15,11 +15,10 @@ import java.util.Iterator;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class IncLineRenderer extends ChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.CYAN;
 
     public IncLineRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setLinePaint(colourScheme.getIncrementalGcLineColour());
     }
 
     public void paintComponent(Graphics2D g2d) {

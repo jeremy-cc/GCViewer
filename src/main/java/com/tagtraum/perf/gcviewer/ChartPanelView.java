@@ -59,7 +59,7 @@ public class ChartPanelView {
     public ChartPanelView(GCDocument gcDocument, URL url) throws DataReaderException {
         this.gcDocument = gcDocument;
         this.preferences = gcDocument.getPreferences();
-        this.modelChart = new ModelChartImpl();
+        this.modelChart = new ModelChartImpl(gcDocument.getColourScheme());
         this.modelPanel = new ModelPanel();
         this.modelDetailsPanel = new ModelDetailsPanel();
 

@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.renderer.ChartColourScheme;
 
 public class SimpleChartRenderer {
     private static final Logger LOGGER = Logger.getLogger(SimpleChartRenderer.class.getName());
@@ -42,7 +43,7 @@ public class SimpleChartRenderer {
     }
 
     private void drawAndSaveToStream(ChartDrawingParameters params) throws IOException {
-        ModelChartImpl pane = new ModelChartImpl();
+        ModelChartImpl pane = new ModelChartImpl(new ChartColourScheme(true));
         pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         pane.setModel(params.model, params.gcPreferences);

@@ -23,7 +23,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
     
     public ConcurrentGcBegionEndRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(CONCURRENT_COLLECTION_BEGIN);
+        setLinePaint(colourScheme.getConcurrentRegionBegin());
     }
 
     public void paintComponent(Graphics2D g2d) {
@@ -39,7 +39,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
             if (event.isConcurrentCollectionStart()) {
                 final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestampBegin) {
-                    g2d.setPaint(CONCURRENT_COLLECTION_BEGIN);
+                    g2d.setPaint(colourScheme.getConcurrentRegionBegin());
                     g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                     lastScaledTimestampBegin = scaledTimestamp;
                 }
@@ -47,7 +47,7 @@ public class ConcurrentGcBegionEndRenderer extends ChartRenderer {
             else if (event.isConcurrentCollectionEnd()) {
                 final int scaledTimestamp = (int) (scaleFactor * (event.getTimestamp() - getModelChart().getModel().getFirstPauseTimeStamp()));
                 if (scaledTimestamp != lastScaledTimestampEnd) {
-                    g2d.setPaint(CONCURRENT_COLLECTION_END);
+                    g2d.setPaint(colourScheme.getConcurrentRegionEnd());
                     g2d.drawLine(scaledTimestamp, 0, scaledTimestamp, height);
                     lastScaledTimestampEnd = scaledTimestamp;
                 }

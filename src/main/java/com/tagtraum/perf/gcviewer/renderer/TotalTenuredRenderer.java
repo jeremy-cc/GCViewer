@@ -21,13 +21,11 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public class TotalTenuredRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.MAGENTA;
-    public static final Paint DEFAULT_FILLPAINT = new GradientPaint(0, 0, Color.MAGENTA, 0, 0, Color.WHITE);
 
     public TotalTenuredRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setFillPaint(DEFAULT_FILLPAINT);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setFillPaint(new GradientPaint(0, 0, colourScheme.getTenuredFillStartColour(), 0, 0, colourScheme.getTenuredFillEndColour()));
+        setLinePaint(colourScheme.getTenuredLineColour());
         setDrawPolygon(true);
         setDrawLine(true);
     }

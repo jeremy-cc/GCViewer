@@ -1,10 +1,6 @@
 package com.tagtraum.perf.gcviewer;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Paint;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -26,22 +22,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -59,18 +42,7 @@ import com.tagtraum.perf.gcviewer.action.Refresh;
 import com.tagtraum.perf.gcviewer.action.Watch;
 import com.tagtraum.perf.gcviewer.action.Zoom;
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
-import com.tagtraum.perf.gcviewer.renderer.ConcurrentGcBegionEndRenderer;
-import com.tagtraum.perf.gcviewer.renderer.FullGCLineRenderer;
-import com.tagtraum.perf.gcviewer.renderer.GCRectanglesRenderer;
-import com.tagtraum.perf.gcviewer.renderer.GCTimesRenderer;
-import com.tagtraum.perf.gcviewer.renderer.IncLineRenderer;
-import com.tagtraum.perf.gcviewer.renderer.InitialMarkLevelRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalHeapRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalTenuredRenderer;
-import com.tagtraum.perf.gcviewer.renderer.TotalYoungRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedHeapRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedTenuredRenderer;
-import com.tagtraum.perf.gcviewer.renderer.UsedYoungRenderer;
+import com.tagtraum.perf.gcviewer.renderer.*;
 import com.tagtraum.perf.gcviewer.util.LocalisationHelper;
 import com.tagtraum.perf.gcviewer.util.LoggerHelper;
 import com.tagtraum.perf.gcviewer.util.OSXSupport;
@@ -130,6 +102,8 @@ public class GCViewerGui extends JFrame {
     private RecentURLsMenu recentURLsMenu;
     
     private GCPreferences preferences;
+
+    private ChartColourScheme colourScheme = new ChartColourScheme(false);
 
     public GCViewerGui() {
         super("tagtraum industries incorporated - GCViewer");
@@ -534,7 +508,7 @@ public class GCViewerGui extends JFrame {
         menuItemFullGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_full_gc_lines"), true);
         menuItemFullGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_full_gc_lines").charAt(0));
         menuItemFullGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_full_gc_lines"));
-        menuItemFullGCLines.setIcon(createMonoColoredImageIcon(FullGCLineRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemFullGCLines.setIcon(createMonoColoredImageIcon(colourScheme.getFullLineColour(), 20, 20));
         menuItemFullGCLines.setActionCommand(GCPreferences.FULL_GC_LINES);
         menuItemFullGCLines.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemFullGCLines);
@@ -543,7 +517,7 @@ public class GCViewerGui extends JFrame {
         menuItemIncGCLines = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"), true);
         menuItemIncGCLines.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_inc_gc_lines").charAt(0));
         menuItemIncGCLines.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_inc_gc_lines"));
-        menuItemIncGCLines.setIcon(createMonoColoredImageIcon(IncLineRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemIncGCLines.setIcon(createMonoColoredImageIcon(colourScheme.getIncrementalGcLineColour(), 20, 20));
         menuItemIncGCLines.setActionCommand(GCPreferences.INC_GC_LINES);
         menuItemIncGCLines.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemIncGCLines);
@@ -552,7 +526,7 @@ public class GCViewerGui extends JFrame {
         menuItemGcTimesLine = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"), true);
         menuItemGcTimesLine.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_line").charAt(0));
         menuItemGcTimesLine.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_line"));
-        menuItemGcTimesLine.setIcon(createMonoColoredImageIcon(GCTimesRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemGcTimesLine.setIcon(createMonoColoredImageIcon(colourScheme.getGcTimeLinesColour(), 20, 20));
         menuItemGcTimesLine.setActionCommand(GCPreferences.GC_LINES_LINE);
         menuItemGcTimesLine.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemGcTimesLine);
@@ -561,7 +535,7 @@ public class GCViewerGui extends JFrame {
         menuItemGcTimesRectangle = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_gc_times_rectangles"), true);
         menuItemGcTimesRectangle.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_gc_times_rectangles").charAt(0));
         menuItemGcTimesRectangle.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_gc_times_rectangles"));
-        menuItemGcTimesRectangle.setIcon(createMonoColoredImageIcon(GCRectanglesRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemGcTimesRectangle.setIcon(createMonoColoredImageIcon(colourScheme.getGcTimeRectanglesColour(), 20, 20));
         menuItemGcTimesRectangle.setActionCommand(GCPreferences.GC_TIMES_RECTANGLES);
         menuItemGcTimesRectangle.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemGcTimesRectangle);
@@ -570,7 +544,7 @@ public class GCViewerGui extends JFrame {
         menuItemTotalMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_total_memory"), true);
         menuItemTotalMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_total_memory").charAt(0));
         menuItemTotalMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_total_memory"));
-        menuItemTotalMemory.setIcon(createMonoColoredImageIcon(TotalHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemTotalMemory.setIcon(createMonoColoredImageIcon(colourScheme.getTotalHeapLineColour(), 20, 20));
         menuItemTotalMemory.setActionCommand(GCPreferences.TOTAL_MEMORY);
         menuItemTotalMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemTotalMemory);
@@ -579,7 +553,7 @@ public class GCViewerGui extends JFrame {
         menuItemTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_tenured_memory"), true);
         menuItemTenuredMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_tenured_memory").charAt(0));
         menuItemTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_tenured_memory"));
-        menuItemTenuredMemory.setIcon(createMonoColoredImageIcon(TotalTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemTenuredMemory.setIcon(createMonoColoredImageIcon(colourScheme.getTenuredLineColour(), 20, 20));
         menuItemTenuredMemory.setActionCommand(GCPreferences.TENURED_MEMORY);
         menuItemTenuredMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemTenuredMemory);
@@ -588,7 +562,7 @@ public class GCViewerGui extends JFrame {
         menuItemYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_young_memory"), true);
         menuItemYoungMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_young_memory").charAt(0));
         menuItemYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_young_memory"));
-        menuItemYoungMemory.setIcon(createMonoColoredImageIcon(TotalYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemYoungMemory.setIcon(createMonoColoredImageIcon(colourScheme.getYoungLineColour(), 20, 20));
         menuItemYoungMemory.setActionCommand(GCPreferences.YOUNG_MEMORY);
         menuItemYoungMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemYoungMemory);
@@ -597,7 +571,7 @@ public class GCViewerGui extends JFrame {
         menuItemUsedMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_memory"), true);
         menuItemUsedMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_memory").charAt(0));
         menuItemUsedMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_memory"));
-        menuItemUsedMemory.setIcon(createMonoColoredImageIcon(UsedHeapRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemUsedMemory.setIcon(createMonoColoredImageIcon(colourScheme.getUsedHeapLineColour(), 20, 20));
         menuItemUsedMemory.setActionCommand(GCPreferences.USED_MEMORY);
         menuItemUsedMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedMemory);
@@ -606,7 +580,7 @@ public class GCViewerGui extends JFrame {
         menuItemUsedTenuredMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_tenured_memory"), true);
         menuItemUsedTenuredMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_tenured_memory").charAt(0));
         menuItemUsedTenuredMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_tenured_memory"));
-        menuItemUsedTenuredMemory.setIcon(createMonoColoredImageIcon(UsedTenuredRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemUsedTenuredMemory.setIcon(createMonoColoredImageIcon(colourScheme.getUsedTenuredLineColour(), 20, 20));
         menuItemUsedTenuredMemory.setActionCommand(GCPreferences.USED_TENURED_MEMORY);
         menuItemUsedTenuredMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedTenuredMemory);
@@ -615,7 +589,7 @@ public class GCViewerGui extends JFrame {
         menuItemUsedYoungMemory = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_used_young_memory"), true);
         menuItemUsedYoungMemory.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_used_young_memory").charAt(0));
         menuItemUsedYoungMemory.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_used_young_memory"));
-        menuItemUsedYoungMemory.setIcon(createMonoColoredImageIcon(UsedYoungRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemUsedYoungMemory.setIcon(createMonoColoredImageIcon(colourScheme.getUsedYoungLineColour(), 20, 20));
         menuItemUsedYoungMemory.setActionCommand(GCPreferences.USED_YOUNG_MEMORY);
         menuItemUsedYoungMemory.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemUsedYoungMemory);
@@ -624,7 +598,7 @@ public class GCViewerGui extends JFrame {
         menuItemInitialMarkLevel = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_initial_mark_level"), true);
         menuItemInitialMarkLevel.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_initial_mark_level").charAt(0));
         menuItemInitialMarkLevel.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_initial_mark_level"));
-        menuItemInitialMarkLevel.setIcon(createMonoColoredImageIcon(InitialMarkLevelRenderer.DEFAULT_LINEPAINT, 20, 20));
+        menuItemInitialMarkLevel.setIcon(createMonoColoredImageIcon(colourScheme.getInitialMarkColour(), 20, 20));
         menuItemInitialMarkLevel.setActionCommand(GCPreferences.INITIAL_MARK_LEVEL);
         menuItemInitialMarkLevel.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemInitialMarkLevel);
@@ -633,7 +607,7 @@ public class GCViewerGui extends JFrame {
         menuItemConcurrentGcBeginEnd = new JCheckBoxMenuItem(LocalisationHelper.getString("main_frame_menuitem_concurrent_collection_begin_end"), true);
         menuItemConcurrentGcBeginEnd.setMnemonic(LocalisationHelper.getString("main_frame_menuitem_mnemonic_concurrent_collection_begin_end").charAt(0));
         menuItemConcurrentGcBeginEnd.setToolTipText(LocalisationHelper.getString("main_frame_menuitem_hint_concurrent_collection_begin_end"));
-        menuItemConcurrentGcBeginEnd.setIcon(createMonoColoredImageIcon(ConcurrentGcBegionEndRenderer.CONCURRENT_COLLECTION_BEGIN, 20, 20));
+        menuItemConcurrentGcBeginEnd.setIcon(createMonoColoredImageIcon(colourScheme.getConcurrentRegionBegin(), 20, 20));
         menuItemConcurrentGcBeginEnd.setActionCommand(GCPreferences.CONCURRENT_COLLECTION_BEGIN_END);
         menuItemConcurrentGcBeginEnd.addActionListener(viewMenuActionListener);
         viewMenu.add(menuItemConcurrentGcBeginEnd);
@@ -669,6 +643,67 @@ public class GCViewerGui extends JFrame {
         }
 
         return menuBar;
+    }
+
+    protected JPanel getGraphKeyPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+                        LocalisationHelper.getString("chartkey_border_title"))));
+
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.anchor = GridBagConstraints.WEST;
+        gc.insets = new Insets(2,5,2,5);
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+
+        gc.gridx = 0;
+        gc.gridy = 0;
+
+        // full gc lines
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_full_gc_lines"), menuItemFullGCLines.getIcon(), SwingConstants.LEFT), gc);
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_inc_gc_lines"), menuItemIncGCLines.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridy = 1;
+        gc.gridx = 0;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_gc_times_line"), menuItemGcTimesLine.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_gc_times_rectangles"), menuItemGcTimesRectangle.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridy = 2;
+        gc.gridx = 0;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_total_memory"), menuItemTotalMemory.getIcon(), SwingConstants.LEFT), gc);
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_used_memory"), menuItemUsedMemory.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridy = 3;
+        gc.gridx = 0;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_young_memory"), menuItemYoungMemory.getIcon(), SwingConstants.LEFT), gc);
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_used_young_memory"), menuItemUsedYoungMemory.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridx = 0;
+        gc.gridy = 4;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_tenured_memory"), menuItemTenuredMemory.getIcon(), SwingConstants.LEFT), gc);
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_used_tenured_memory"), menuItemUsedTenuredMemory.getIcon(), SwingConstants.LEFT), gc);
+
+        gc.gridy = 5;
+        gc.gridx = 0;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_initial_mark_level"), menuItemInitialMarkLevel.getIcon(), SwingConstants.LEFT), gc);
+        gc.gridx = 1;
+        panel.add(new JLabel(LocalisationHelper.getString("main_frame_menuitem_concurrent_collection_begin_end"), menuItemConcurrentGcBeginEnd.getIcon(), SwingConstants.LEFT), gc);
+
+        return panel;
+    }
+
+    public ChartColourScheme getColourScheme() {
+        return colourScheme;
     }
 
     private class ViewMenuActionListener implements ActionListener {

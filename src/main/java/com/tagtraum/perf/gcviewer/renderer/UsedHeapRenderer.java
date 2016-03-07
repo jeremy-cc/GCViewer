@@ -19,11 +19,10 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class UsedHeapRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.BLUE;
 
     public UsedHeapRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setLinePaint(colourScheme.getUsedHeapLineColour());
         setDrawPolygon(false);
         setDrawLine(true);
     }

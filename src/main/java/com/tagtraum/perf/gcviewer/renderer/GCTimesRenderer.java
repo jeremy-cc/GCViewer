@@ -18,11 +18,10 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class GCTimesRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.GREEN;
 
     public GCTimesRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setLinePaint(colourScheme.getGcTimeLinesColour());
         setDrawPolygon(false);
         setDrawLine(true);
     }

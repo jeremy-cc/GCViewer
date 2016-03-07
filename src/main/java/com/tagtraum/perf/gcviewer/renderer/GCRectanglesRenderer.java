@@ -18,12 +18,11 @@ import com.tagtraum.perf.gcviewer.model.VmOperationEvent;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class GCRectanglesRenderer extends ChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.GRAY;
     private Paint brighter;
 
     public GCRectanglesRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setLinePaint(colourScheme.getDefaultLineColour());
     }
 
     public void setLinePaint(Paint linePaint) {
@@ -62,19 +61,19 @@ public class GCRectanglesRenderer extends ChartRenderer {
                 if ((x + width) > leftBoundary && x < rightBoundary) {
                     // make sure only visible rectangles are drawn
                     if (event.isFull()) {
-                        g2d.setPaint(Color.BLACK);
+                        g2d.setPaint(colourScheme.getFullMarkColour());
                     }
                     else if (event.isInitialMark()) {
-                        g2d.setPaint(Color.BLUE);
+                        g2d.setPaint(colourScheme.getInitialMarkColour());
                     }
                     else if (event.isRemark()) {
-                        g2d.setPaint(Color.ORANGE);
+                        g2d.setPaint(colourScheme.getRemarkColour());
                     }
                     else if (event.getExtendedType().getType() == AbstractGCEvent.Type.INC_GC) {
                         g2d.setPaint(brighter);
                     }
                     else if (event instanceof VmOperationEvent) {
-                        g2d.setPaint(Color.RED);
+                        g2d.setPaint(colourScheme.getVmEventColour());
                     }
                     else {
                         g2d.setPaint(getLinePaint());

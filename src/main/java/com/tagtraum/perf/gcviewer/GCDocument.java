@@ -35,6 +35,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.tagtraum.perf.gcviewer.imp.DataReaderException;
+import com.tagtraum.perf.gcviewer.renderer.ChartColourScheme;
 
 /**
  * GCDocument.
@@ -49,6 +50,8 @@ public class GCDocument extends JInternalFrame {
     private boolean watched;
     private RefreshWatchDog refreshWatchDog;
     private GCPreferences preferences;
+    private JPanel graphKeyPanel;
+    private ChartColourScheme colourScheme;
 
     public GCDocument(final GCViewerGui gcViewer, String s) {
         super(s, true, true, true, false);
@@ -57,6 +60,9 @@ public class GCDocument extends JInternalFrame {
         preferences = gcViewer.getPreferences();
         showModelPanel = preferences.isShowDataPanel();
         modelChartListFacade = new MultiModelChartFacade();
+        graphKeyPanel = gcViewer.getGraphKeyPanel();
+        colourScheme = gcViewer.getColourScheme();
+
         addComponentListener(new ResizeListener());
         GridBagLayout layout = new GridBagLayout();
         getContentPane().setLayout(layout);
@@ -221,6 +227,16 @@ public class GCDocument extends JInternalFrame {
             modelChartAndDetails.setVisible(!chartPanelView.isMinimized());
             getContentPane().add(modelChartAndDetails, constraints);
 
+            // add chart key
+            constraints.gridy = row;
+            constraints.gridheight = 1;
+            constraints.gridx = 1;
+            constraints.weightx = 0;
+            constraints.weighty = 0;
+            constraints.fill = GridBagConstraints.HORIZONTAL;
+            constraints.anchor = GridBagConstraints.NORTH;
+            getContentPane().add(graphKeyPanel, constraints);
+
             constraints.gridy = row;
             constraints.gridheight = 1;
             constraints.gridx = 1;
@@ -230,6 +246,7 @@ public class GCDocument extends JInternalFrame {
             constraints.anchor = GridBagConstraints.SOUTH;
             getContentPane().add(modelPanel, constraints);
             modelPanel.setVisible(showModelPanel && (!chartPanelView.isMinimized()));
+
 
             if (!chartPanelView.isMinimized()) {
                 noMaximizedChartPanelView = false;
@@ -307,6 +324,10 @@ public class GCDocument extends JInternalFrame {
         return watched;
     }
 
+    public ChartColourScheme getColourScheme() {
+        return colourScheme;
+    }
+
     private static class MasterViewPortChangeListener implements ChangeListener {
         private List<JViewport> slaveViewPorts = new ArrayList<JViewport>();
 
@@ -372,6 +393,14 @@ public class GCDocument extends JInternalFrame {
         public boolean isAntiAlias() {
             if (chartPanelViews.isEmpty()) return false;
             return chartPanelViews.get(0).getModelChart().isAntiAlias();
+        }
+
+        @Override
+        public ChartColourScheme getColourScheme() {
+            if(chartPanelViews.isEmpty()) {
+                return new ChartColourScheme(false);
+            }
+            return chartPanelViews.get(0).getModelChart().getColourScheme();
         }
 
         @Override

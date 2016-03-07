@@ -19,11 +19,10 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * <p>created on: 22.07.2012</p>
  */
 public class UsedYoungRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.LIGHT_GRAY;
 
     public UsedYoungRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setLinePaint(colourScheme.getUsedYoungLineColour());
         setDrawPolygon(false);
         setDrawLine(true);
     }

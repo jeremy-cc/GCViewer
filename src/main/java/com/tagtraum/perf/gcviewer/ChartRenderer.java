@@ -1,5 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
+import com.tagtraum.perf.gcviewer.renderer.ChartColourScheme;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,9 +16,11 @@ public abstract class ChartRenderer extends JComponent {
     private ModelChartImpl modelChart;
     private boolean drawLine;
     private Paint linePaint;
+    protected ChartColourScheme colourScheme;
 
     public ChartRenderer(ModelChartImpl modelChart) {
         this.modelChart = modelChart;
+        this.colourScheme = modelChart.getColourScheme();
     }
 
     public void setLinePaint(Paint linePaint) {

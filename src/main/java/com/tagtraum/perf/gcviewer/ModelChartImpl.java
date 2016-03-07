@@ -50,11 +50,15 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
     private TimeOffsetPanel timeOffsetPanel;
     private int lastViewPortWidth = 0;
 
-    public ModelChartImpl() {
+    private ChartColourScheme colourScheme;
+
+    public ModelChartImpl(ChartColourScheme colourScheme) {
         super();
         this.model = new GCModel();
         this.chart = new Chart();
         this.chart.setPreferredSize(new Dimension(0, 0));
+        this.colourScheme = colourScheme;
+
         setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
@@ -424,6 +428,10 @@ public class ModelChartImpl extends JScrollPane implements ModelChart, ChangeLis
 
     public double getMaxPause() {
         return maxPause;
+    }
+
+    public ChartColourScheme getColourScheme() {
+        return colourScheme;
     }
 
     private class Chart extends JPanel implements ComponentListener {

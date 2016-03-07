@@ -21,13 +21,11 @@ import com.tagtraum.perf.gcviewer.model.GCModel;
  * @author <a href="mailto:gcviewer@gmx.ch">Joerg Wuethrich</a>
  */
 public class TotalYoungRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.ORANGE;
-    public static final Paint DEFAULT_FILLPAINT = new GradientPaint(0, 0, Color.ORANGE, 0, 0, Color.WHITE);
 
     public TotalYoungRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setFillPaint(DEFAULT_FILLPAINT);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setFillPaint(new GradientPaint(0, 0, colourScheme.getYoungFillStartColour(), 0, 0, colourScheme.getYoungFillEndColour()));
+        setLinePaint(colourScheme.getYoungLineColour());
         setDrawPolygon(true);
         setDrawLine(true);
     }

@@ -16,13 +16,11 @@ import java.util.Iterator;
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a>
  */
 public class TotalHeapRenderer extends PolygonChartRenderer {
-    public static final Paint DEFAULT_LINEPAINT = Color.RED;
-    public static final Paint DEFAULT_FILLPAINT = new GradientPaint(0, 0, Color.RED, 0, 0, Color.WHITE);
 
     public TotalHeapRenderer(ModelChartImpl modelChart) {
         super(modelChart);
-        setFillPaint(DEFAULT_FILLPAINT);
-        setLinePaint(DEFAULT_LINEPAINT);
+        setFillPaint(new GradientPaint(0, 0, colourScheme.getTotalHeapFillStartColour(), 0, 0, colourScheme.getTotalHeapFillEndColour()));
+        setLinePaint(colourScheme.getTotalHeapLineColour());
         setDrawPolygon(true);
         setDrawLine(true);
     }
