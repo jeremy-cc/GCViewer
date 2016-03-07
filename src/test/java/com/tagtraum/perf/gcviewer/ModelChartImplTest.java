@@ -1,6 +1,7 @@
 package com.tagtraum.perf.gcviewer;
 
 import com.tagtraum.perf.gcviewer.model.GCModel;
+import com.tagtraum.perf.gcviewer.renderer.ChartColourScheme;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -35,7 +36,7 @@ public class ModelChartImplTest {
     @Theory
     public void shouldShowOrNotDateStampAccordingToModelAndSettings(TestCase testCase) throws Exception {
         //given
-        ModelChartImpl modelChart = new ModelChartImpl();
+        ModelChartImpl modelChart = new ModelChartImpl(new ChartColourScheme(true));
         GCPreferences preferences = new GCPreferences();
         GCModel gcModel = Mockito.mock(GCModel.class);
         Mockito.when(gcModel.hasDateStamp()).thenReturn(testCase.hasDateStamp());
