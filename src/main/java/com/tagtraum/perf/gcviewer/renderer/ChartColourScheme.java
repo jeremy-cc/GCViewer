@@ -33,6 +33,7 @@ public class ChartColourScheme {
     private Color totalYoungFillEndColour;
     private Color usedHeapLineColour;
     private Color usedTenuredLineColour;
+    private Color usedTenuredFillColour;
     private Color usedYoungLineColour;
 
     /*
@@ -67,6 +68,21 @@ public class ChartColourScheme {
                 totalYoungFillEndColour = new Color(Integer.parseInt(colourScheme.getProperty("total_young_fill_colour_end"), 16));
                 usedHeapLineColour = new Color(Integer.parseInt(colourScheme.getProperty("used_heap_outline_colour"), 16));
                 usedTenuredLineColour = new Color(Integer.parseInt(colourScheme.getProperty("used_tenured_outline_colour"), 16));
+                // alpha blending
+                String colourString = colourScheme.getProperty("used_tenured_fill_colour");
+                if(colourString.length() > 6) {
+                    usedTenuredFillColour = new Color(
+                            Integer.valueOf(colourString.substring(0, 2), 16),
+                            Integer.valueOf(colourString.substring(2, 4), 16),
+                            Integer.valueOf(colourString.substring(4, 6), 16),
+                            Integer.valueOf(colourString.substring(6, 8), 16));
+                } else {
+                    usedTenuredFillColour = new Color(
+                            Integer.valueOf(colourString.substring(0, 2), 16),
+                            Integer.valueOf(colourString.substring(2, 4), 16),
+                            Integer.valueOf(colourString.substring(4, 6), 16));
+                }
+
                 usedYoungLineColour = new Color(Integer.parseInt(colourScheme.getProperty("used_young_outline_colour"), 16));
             } catch (IOException ioe) {
                 ioe.printStackTrace();
@@ -101,6 +117,7 @@ public class ChartColourScheme {
         totalYoungFillEndColour = Color.WHITE;
         usedHeapLineColour = Color.CYAN;
         usedTenuredLineColour = Color.MAGENTA;
+        usedTenuredFillColour = new Color(220, 60, 220, 128);
         usedYoungLineColour = Color.ORANGE;
     }
 
@@ -194,7 +211,9 @@ public class ChartColourScheme {
         return usedTenuredLineColour;
     }
 
-
+    public Color getUsedTenuredFillColour() {
+        return usedTenuredFillColour;
+    }
 
     public Color getUsedYoungLineColour() {
         return usedYoungLineColour;

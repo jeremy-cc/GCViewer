@@ -22,7 +22,8 @@ public class UsedTenuredRenderer extends PolygonChartRenderer {
     public UsedTenuredRenderer(ModelChartImpl modelChart) {
         super(modelChart);
         setLinePaint(colourScheme.getUsedTenuredLineColour());
-        setDrawPolygon(false);
+        setFillPaint(colourScheme.getUsedTenuredFillColour());
+        setDrawPolygon(true);
         setDrawLine(true);
     }
 
